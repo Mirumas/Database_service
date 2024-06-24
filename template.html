@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Материалы</title>
+</head>
+<body>
+    <h1>Материалы</h1>
+    <table>
+        <tr>
+            <th>Наименование материала</th>
+            <th>Цена</th>
+            <th>Наименование ГОСТ</th>
+            <th>Степень запаха</th>
+        </tr>
+        {% for material in materials %}
+        <tr>
+            <td>{{ material.name_material }}</td>
+            <td>{{ material.price }}</td>
+            <td>{{ material.name_gost }}</td>
+            <td>{{ material.degree_smell }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
