@@ -24,7 +24,7 @@ app.include_router(smell_router)
 
 @app.get("/")
 def main():
-    return FileResponse("D:\Boboshko 404a\Database_service\main_page.html")
+    return FileResponse("main_page.html")
 
 
 if __name__ == "__main__":
