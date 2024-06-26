@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from db import get_session
-from models.classes import Parameter, Parameter_Main, Tags, New_Response
+from models.classes import Parameter, Parameter_Main, Tags, New_Response, Material, Material_parameters, Material_Main, Gost, Smell, Manufacturer
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import Union, Annotated
@@ -15,6 +15,15 @@ def get_parameters(db: Session = Depends(get_session)):
     if parameters is None:
         return JSONResponse(status_code=404, content={"message": "Параметры не найдены"})
     return parameters
+
+@parameter_router.get("/{name_parameter}", response_model=Union[list[Material_Main], New_Response], tags=[Tags.parameter])
+def get_materials_by_parameter_name(name_parameter: str, value: float, db: Session = Depends(get_session)):
+    material_by_parameter = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country)
+                             .select_from(Parameter).filter(Parameter.name_parameter.ilike(f'%{name_parameter}%'))
+                             .join(Material_parameters).filter(Material_parameters.value_parameter >= value).join(Material).join(Gost).join(Smell).join(Manufacturer))
+    if material_by_parameter is None:
+        return JSONResponse(status_code=404, content={"message": "Параметры не найдены"})
+    return material_by_parameter
 
 
 @parameter_router.get("/{id_parameter}", response_model=Union[Parameter_Main, New_Response], tags=[Tags.parameter])

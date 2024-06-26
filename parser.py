@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from models.classes import Base, Gost, Manufacturer, Parameter, Smell, Type_of_material, Printing_technology, Material
+from db import get_session
 
 def get_urls():
     url = "https://3dvision.su/material/table/fdm-fff/?utm_referer=geoadv_direct&utm_ya_campaign=65950864813&yabizcmpgn=11745514&utm_source=geoadv_direct&utm_candidate=59161049458&utm_content=16257341963&yclid=16521340288532479999"
@@ -47,5 +48,27 @@ def get_data(links):
         material.append(data)
     return material
 
-print(get_data(get_urls()))
+db = get_session()
+
+data = get_data(get_urls())
+print(data)
+
+
+def is_manufacturer_exists(name, session):
+    try:
+        result = session.query(Manufacturer).filter(Manufacturer.name_manufacturer == name).one()
+        return manufacturer.id_manufacturer
+    except NoResultFound:
+        return None
+
+
+i = 1
+
+for item in data:
+    ma = is_manufacturer_exists(item[5][1])
+    if ma is None:
+        manufacturer = Manufacturer(name_manufacturer=item[5][1], country=item[6][1])
+        ma = is_manufacturer_exists(item[5][1])
+
+    material = Material(name_material=item[0][1], price=item[1][2], id_smell=1, id_manufacturer=ma, id_type=1)
 

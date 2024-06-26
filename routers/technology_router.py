@@ -34,7 +34,7 @@ def create_printing_technology(
         item: Annotated[Printing_technology_Main, Body(embed=True, description="Новая технология печати")],
         db: Session = Depends(get_session)):
     try:
-        printing_technology = Printing_technology(name_printing_technology=item.name_printing_technology)
+        printing_technology = Printing_technology(name_technology=item.name_technology)
         if printing_technology is None:
             raise HTTPException(status_code=404, detail="Объект не определен")
         db.add(printing_technology)
@@ -55,7 +55,7 @@ def edit_printing_technology(
         Printing_technology.id_technology == item.id_technology).first()
     if printing_technology is None:
         return JSONResponse(status_code=404, content={"message": "Технология печати не найдена"})
-    printing_technology.name_printing_technology = item.name_printing_technology
+    printing_technology.name_technology = item.name_technology
     try:
         db.commit()
         db.refresh(printing_technology)

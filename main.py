@@ -9,9 +9,7 @@ from routers.gost_router import gost_router
 from routers.parameter_router import parameter_router
 from routers.type_router import type_router
 
-
 app = FastAPI()
-
 
 app.include_router(material_router)
 app.include_router(parameter_router)
@@ -24,7 +22,7 @@ app.include_router(smell_router)
 
 @app.get("/")
 def main():
-    return FileResponse("main_page.html")
+    return FileResponse("public/main_page.html")
 
 
 if __name__ == "__main__":

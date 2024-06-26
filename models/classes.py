@@ -7,26 +7,17 @@ from enum import Enum
 Base = declarative_base()
 
 
-class Gost_material(Base):
-    __tablename__ = "gost_material"
-    id_material = Column(Integer, ForeignKey('material.id_material'), primary_key=True)
-    id_gost = Column(Integer, ForeignKey('gost.id_gost'), primary_key=True)
-
-    material = relationship("Material", back_populates="gost_materials")
-    gost = relationship("Gost", back_populates="gost_materials")
-
 class Gost(Base):
     __tablename__ = "gost"
     id_gost = Column(Integer, primary_key=True, autoincrement=True)
     name_gost = Column(String, index=True, nullable=False)
 
-    # materials = relationship("Gost_material", backref='gost')
-    gost_materials = relationship("Gost_material", back_populates="gost")
+    materials = relationship("Material")
 
 
 class Gost_Main(BaseModel):
     id_gost: Annotated[Union[int, None], Field(default=100, ge=1, lt=200)] = None
-    name_gost: Union[str, None] = None
+    name_gost: Union[str, None] = 'unknown'
 
 
 class Manufacturer(Base):
@@ -36,11 +27,10 @@ class Manufacturer(Base):
     country = Column(String, index=True, nullable=False)
 
 
-
 class Manufacturer_Main(BaseModel):
     id_manufacturer: Annotated[Union[int, None], Field(default=100, ge=1, lt=200)] = None
-    name_manufacturer: Union[str, None] = None
-    country: Union[str, None] = None
+    name_manufacturer: Union[str, None] = 'unknown'
+    country: Union[str, None] = 'unknown'
 
 
 class Parameter(Base):
@@ -52,8 +42,8 @@ class Parameter(Base):
 
 
 class Parameter_Main(BaseModel):
-    id_parameter: Annotated[Union[int, None], Field(default=100, ge=1, lt=200)] = None
-    name_parameter: Union[str, None] = None
+    name_parameter: Union[str, None] = 'unknown'
+    value_parameter: Union[float, None] = 0.0
 
 
 class Material_parameters(Base):
@@ -74,7 +64,7 @@ class Smell(Base):
 
 class Smell_Main(BaseModel):
     id_smell: Annotated[Union[int, None], Field(default=100, ge=1, lt=200)] = None
-    degree_smell: Union[str, None] = None
+    degree_smell: Union[str, None] = 'unknown'
 
 
 class Type_of_material(Base):
@@ -84,7 +74,7 @@ class Type_of_material(Base):
 
 
 class Type_of_material_Main(BaseModel):
-    name_type: Union[str, None] = None
+    name_type: Union[str, None] = 'unknown'
 
 
 class Printing_technology(Base):
@@ -94,7 +84,7 @@ class Printing_technology(Base):
 
 
 class Printing_technology_Main(BaseModel):
-    name_technology: Union[str, None] = None
+    name_technology: Union[str, None] = 'unknown'
 
 
 class Material(Base):
@@ -105,17 +95,19 @@ class Material(Base):
     id_manufacturer = Column(Integer, ForeignKey('manufacturer.id_manufacturer'))
     id_smell = Column(Integer, ForeignKey('smell.id_smell'))
     id_type = Column(Integer, ForeignKey('type_of_material.id_type'))
+    id_gost = Column(Integer, ForeignKey('gost.id_gost'))
 
-    # gosts = relationship("Gost_material", backref='material')
-    gost_materials = relationship("Gost_material", back_populates="material")
     material_parameters = relationship("Material_parameters", back_populates="material")
 
 
 class Material_Main(BaseModel):
-    name_material: Union[str, None] = None
-    price: Union[float, None] = None
-    name_gost: Union[str, None] = None
-    degree_smell: Union[str, None] = None
+    id_material: int | None = None
+    name_material: str | None = 'material'
+    price: float | None = 0.0
+    name_gost: str | None = 'unknown'
+    degree_smell: str | None = 'unknown'
+    name_manufacturer: str | None = 'unknown'
+    country: str | None = 'unknown'
 
 
 class Technology_material(Base):

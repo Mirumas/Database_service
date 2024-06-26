@@ -12,7 +12,7 @@
             <th>Наименование ГОСТ</th>
             <th>Степень запаха</th>
         </tr>
-        {% for material in materials %}
+        {% for material in dict %}
         <tr>
             <td>{{ material.name_material }}</td>
             <td>{{ material.price }}</td>
