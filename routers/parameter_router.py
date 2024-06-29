@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Request
 from db import get_session
 from models.classes import Parameter, Parameter_Main, Tags, New_Response, Material, Material_parameters, Material_Main, Gost, Smell, Manufacturer
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import Union, Annotated
 from starlette import status
+from db import templates
 
 parameter_router = APIRouter(tags=[Tags.parameter], prefix="/routers/parameter_router")
 
@@ -26,12 +27,13 @@ def get_materials_by_parameter_name(name_parameter: str, value: float, db: Sessi
     return material_by_parameter
 
 
-@parameter_router.get("/{id_parameter}", response_model=Union[Parameter_Main, New_Response], tags=[Tags.parameter])
-def get_parameter(id_parameter: int, db: Session = Depends(get_session)):
-    parameter = db.query(Parameter).filter(Parameter.id_parameter == id_parameter).first()
-    if parameter is None:
-        return JSONResponse(status_code=404, content={"message": "Параметр не найден"})
-    return parameter
+@parameter_router.get("/parameters/{id_material}", response_model=Union[list[Parameter_Main], New_Response], tags=[Tags.parameter])
+def get_parameter_for_material(request: Request, id_material: int, db: Session = Depends(get_session)):
+    parameters = (db.query(Material_parameters.value_parameter, Parameter.name_parameter, Parameter.units ).select_from(Material)
+                  .filter(Material.id_material == id_material).join(Material_parameters).join(Parameter))
+    if parameters is None:
+        return JSONResponse(status_code=404, content={"message": "Параметры не найдены"})
+    return templates.TemplateResponse("material.html", {"request": request, "parameters": parameters})
 
 
 @parameter_router.post("/", response_model=Union[Parameter_Main, New_Response],

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main page</title>
+</head>
+
+<style>
+    #input {
+    width: 200px; /* Ширина поля в пикселах */
+    }
+    body {
+    margin: 0; /* Убираем отступы */
+    }
+    .parent {
+    margin: 1%; /* Отступы вокруг элемента */
+    background: #fff; /* Цвет фона */
+    padding: 5px; /* Поля вокруг текста */
+    }
+    .child {
+    border: 3px solid #666; /* Параметры рамки */
+    padding: 10px; /* Поля вокруг текста */
+    margin: 10px; /* Отступы вокруг */
+    }
+</style>
+
+<body>
+<h1><p align="center">Материалы для 3д-печати</p></h1>
+<div class="parent">
+    <form action="/routers/material_router/name" method="post">
+        <div class="child"><label> Введите название материала: <input type="text" id="input" name="name_material" value=" "></label>
+            <button type="submit">Показать</button>
+        </div>
+    </form>
+    <form>
+        <div class="child">
+            <p><label> Тип: </label></p>
+            <label> <input type="checkbox" name="PLA"> PLA</label>
+            <label> <input type="checkbox" name="PETG"> PETG</label>
+            <label> <input type="checkbox" name="ABS"> ABS</label>
+            <label> <input type="checkbox" name="PEEK"> PEEK</label>
+        </div>
+        <div class="child">
+            <p><label> Диаметр: </label></p>
+            <label> <input type="checkbox" name="1.75"> 1.75 мм</label>
+            <label> <input type="checkbox" name="2.85"> 2.85 мм</label>
+        </div>
+
+        <div class="child">
+            <p><label> Вес: </label></p>
+            <label> <input type="checkbox" name="0.25"> 0.25 кг</label>
+            <label> <input type="checkbox" name="0.5"> 0.5 кг</label>
+            <label> <input type="checkbox" name="0.75"> 0.75 кг</label>
+            <label> <input type="checkbox" name="1"> 1 кг</label>
+            <label> <input type="checkbox" name="2"> 2 кг</label>
+        </div>
+
+        <div class="child">
+            <p><label> Температура стола, °C: <input type="text" name="table_t"></label></p>
+            <p><label> Температура экструдера, °C: <input type="text" name="extr_t"></label></p>
+            <p><label> Плотность, г/см3: <input type="text" name="density"></label></p>
+            <p><label> Твердость по шору, D: <input type="text" name="hardness"></label></p>
+            <p><label> Прочность на изгиб, МПа: <input type="text" name="strength_flexural"></label></p>
+            <p><label> Ударная вязкость по Шарпи, кДж/м2: <input type="text" name="viscosity"></label></p>
+            <p><label> Прочность при растяжении вдоль слоев, МПа: <input type="text" name="strength_along"></label></p>
+            <p><label> Модуль упругости при растяжении вдоль слоев, ГПа: <input type="text"
+                                                                                name="elastic_modulus_along"></label>
+            </p>
+            <p><label> Модуль упругости на изгиб, ГПа: <input type="text" name="elastic_modulus_flexural"></label></p>
+            <p><label> Максимальная нагрузка на изгиб, Н: <input type="text" name="bending_load"></label></p>
+            <p><label> Прочность при растяжении поперек слоев, МПа: <input type="text" name="strength_across"></label>
+            </p>
+            <p><label> Модуль упругости при растяжении поперек слоев, ГПа: <input type="text"
+                                                                                  name="elastic_modulus_across"></label>
+            </p>
+            <p><label> Максимальная нагрузка на растяжение, Н: <input type="text" name="tensile_load"></label></p>
+            <p><label> Прочность на сжатие, МПа: <input type="text" name="compressive_strength"></label></p>
+        </div>
+        <p align="center">
+            <button type="submit">Показать материалы</button>
+        </p>
+    </form>
+</div>
+</body>
+</html>

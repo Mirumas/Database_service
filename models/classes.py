@@ -1,7 +1,7 @@
-from typing import Annotated, Union, List
+from typing import Annotated, Union
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, String, Integer, Float, ForeignKey, Double, Table
-from sqlalchemy.orm import declarative_base, relationship, Mapped
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Double
+from sqlalchemy.orm import declarative_base, relationship
 from enum import Enum
 
 Base = declarative_base()
@@ -37,12 +37,14 @@ class Parameter(Base):
     __tablename__ = "parameter"
     id_parameter = Column(Integer, primary_key=True, autoincrement=True)
     name_parameter = Column(String, index=True, nullable=False)
+    units = Column(String, index=True, nullable=False)
 
     material_parameters = relationship("Material_parameters", back_populates="parameter")
 
 
 class Parameter_Main(BaseModel):
     name_parameter: Union[str, None] = 'unknown'
+    units: Union[str, None] = 'unknown'
     value_parameter: Union[float, None] = 0.0
 
 
@@ -108,6 +110,17 @@ class Material_Main(BaseModel):
     degree_smell: str | None = 'unknown'
     name_manufacturer: str | None = 'unknown'
     country: str | None = 'unknown'
+
+
+class Material_with_parameters_Main(BaseModel):
+    id_material: int | None = None
+    name_material: str | None = 'material'
+    price: float | None = 0.0
+    name_gost: str | None = 'unknown'
+    degree_smell: str | None = 'unknown'
+    name_manufacturer: str | None = 'unknown'
+    country: str | None = 'unknown'
+    parameters: list[Parameter_Main] | None = []
 
 
 class Technology_material(Base):

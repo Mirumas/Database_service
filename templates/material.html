@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Material</title>
+</head>
+<body>
+<ul>
+    {% for parameter in parameters %}
+    <li>{{ parameter.name_parameter }}, {{ parameter.units }}: {{ parameter.value_parameter }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
