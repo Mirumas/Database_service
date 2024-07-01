@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, Form
-from fastapi.responses import FileResponse
+from fastapi.responses import RedirectResponse
 from routers.material_router import material_router
 from routers.manufacturer_router import manufacturer_router
 from routers.technology_router import technology_router
@@ -22,7 +22,7 @@ app.include_router(smell_router)
 
 @app.get("/")
 def main():
-    return FileResponse("templates/main_page.html")
+    return RedirectResponse("/routers/parameter_router/")
 
 
 if __name__ == "__main__":

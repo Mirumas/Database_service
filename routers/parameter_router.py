@@ -11,11 +11,11 @@ parameter_router = APIRouter(tags=[Tags.parameter], prefix="/routers/parameter_r
 
 
 @parameter_router.get("/", response_model=Union[list[Parameter_Main], New_Response], tags=[Tags.parameter])
-def get_parameters(db: Session = Depends(get_session)):
+def get_parameters(request: Request, db: Session = Depends(get_session)):
     parameters = db.query(Parameter).all()
     if parameters is None:
         return JSONResponse(status_code=404, content={"message": "Параметры не найдены"})
-    return parameters
+    return templates.TemplateResponse("main_page.html", {"request": request, "parameters": parameters})
 
 @parameter_router.get("/{name_parameter}", response_model=Union[list[Material_Main], New_Response], tags=[Tags.parameter])
 def get_materials_by_parameter_name(name_parameter: str, value: float, db: Session = Depends(get_session)):

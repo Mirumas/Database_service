@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Request, Form
 from db import get_session
-from models.classes import Material, Material_Main, Tags, New_Response, Gost, Smell, Material_parameters, Parameter, Material_with_parameters_Main, Parameter_Main, Manufacturer
+from models.classes import Material, Material_Main, Tags, New_Response, Gost, Smell, Material_parameters, Parameter, Material_with_parameters_Main, Printing_technology, Parameter_Main, Manufacturer
 from fastapi.responses import JSONResponse, HTMLResponse
 from sqlalchemy.orm import Session
 from typing import Union, Annotated
 from starlette import status
 from db import templates
-import cgi
 
 material_router = APIRouter(tags=[Tags.material], prefix="/routers/material_router")
 
@@ -15,9 +14,9 @@ material_router = APIRouter(tags=[Tags.material], prefix="/routers/material_rout
 def get_materials_by_name(request: Request, name_material: str = Form(...), db: Session = Depends(get_session)):
     materials_by_name = (
         db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell,
-                 Manufacturer.name_manufacturer, Manufacturer.country).select_from(Material)
+                 Manufacturer.name_manufacturer, Manufacturer.country, Printing_technology.name_technology).select_from(Material)
         .filter(Material.name_material.ilike(f'%{name_material}%'))
-        .join(Gost).join(Smell).join(Manufacturer))
+        .join(Gost).join(Smell).join(Manufacturer).join(Printing_technology))
     if not materials_by_name.first():
         return JSONResponse(status_code=404, content={"message": "Материал не найден"})
     return templates.TemplateResponse("materials.html", {"request": request, "materials": materials_by_name})
@@ -25,8 +24,8 @@ def get_materials_by_name(request: Request, name_material: str = Form(...), db: 
 
 @material_router.get("/", response_model=Union[list[Material_Main], New_Response], tags=[Tags.material], response_class=HTMLResponse)
 def get_materials(request: Request, db: Session = Depends(get_session)):
-    materials = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country).
-                select_from(Material).join(Gost).join(Smell).join(Manufacturer).all())
+    materials = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country, Printing_technology.name_technology).
+                select_from(Material).join(Gost).join(Smell).join(Manufacturer).join(Printing_technology).all())
     if materials is None:
         return JSONResponse(status_code=404, content={"message": "Материалы не найдены"})
     return templates.TemplateResponse("materials.html", {"request": request, "materials": materials})
@@ -34,22 +33,12 @@ def get_materials(request: Request, db: Session = Depends(get_session)):
 
 @material_router.get("/{id_material}", response_model=Union[Material_with_parameters_Main, New_Response], tags=[Tags.material])
 def get_material_by_id(id_material: int, db: Session = Depends(get_session)):
-    material = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country, Material_parameters.value_parameter, Parameter.name_parameter)
+    material = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country, Material_parameters.value_parameter, Parameter.name_parameter, Printing_technology.name_technology)
                 .select_from(Material).filter(Material.id_material == id_material)
                 .join(Gost).join(Smell).join(Manufacturer).join(Material_parameters).join(Parameter))
     if material is None:
         return JSONResponse(status_code=404, content={"message": "Материал не найден"})
     return material
-
-
-# @material_router.get("/{name_material}/", response_model=Union[list[Material_Main], New_Response], tags=[Tags.material])
-# def get_materials_by_name(request: Request, name_material: str, db: Session = Depends(get_session)):
-#     materials_by_name = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country)
-#                              .select_from(Material).filter(Material.name_material.ilike(f'%{name_material}%'))
-#                              .join(Gost).join(Smell).join(Manufacturer))
-#     if materials_by_name is None:
-#         return JSONResponse(status_code=404, content={"message": "Материал не найден"})
-#     return templates.TemplateResponse("materials.html", {"request": request, "materials": materials_by_name})
 
 
 @material_router.post("/", response_model=Union[Material_Main, New_Response],

@@ -84,6 +84,8 @@ class Printing_technology(Base):
     id_technology = Column(Integer, primary_key=True, autoincrement=True)
     name_technology = Column(String, index=True, nullable=False)
 
+    materials = relationship("Material")
+
 
 class Printing_technology_Main(BaseModel):
     name_technology: Union[str, None] = 'unknown'
@@ -98,6 +100,7 @@ class Material(Base):
     id_smell = Column(Integer, ForeignKey('smell.id_smell'))
     id_type = Column(Integer, ForeignKey('type_of_material.id_type'))
     id_gost = Column(Integer, ForeignKey('gost.id_gost'))
+    id_technology = Column(Integer, ForeignKey('printing_technology.id_technology'))
 
     material_parameters = relationship("Material_parameters", back_populates="material")
 
@@ -106,6 +109,7 @@ class Material_Main(BaseModel):
     id_material: int | None = None
     name_material: str | None = 'material'
     price: float | None = 0.0
+    technology: str | None = 'material'
     name_gost: str | None = 'unknown'
     degree_smell: str | None = 'unknown'
     name_manufacturer: str | None = 'unknown'
@@ -121,12 +125,6 @@ class Material_with_parameters_Main(BaseModel):
     name_manufacturer: str | None = 'unknown'
     country: str | None = 'unknown'
     parameters: list[Parameter_Main] | None = []
-
-
-class Technology_material(Base):
-    __tablename__ = "technology_material"
-    id_material = Column(Integer, ForeignKey('material.id_material'), primary_key=True)
-    id_technology = Column(Integer, ForeignKey('printing_technology.id_technology'), primary_key=True)
 
 
 class Tags(Enum):
