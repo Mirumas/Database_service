@@ -17,7 +17,7 @@ def get_parameters(request: Request, db: Session = Depends(get_session)):
         return JSONResponse(status_code=404, content={"message": "Параметры не найдены"})
     return templates.TemplateResponse("main_page.html", {"request": request, "parameters": parameters})
 
-@parameter_router.get("/{name_parameter}", response_model=Union[list[Material_Main], New_Response], tags=[Tags.parameter])
+@parameter_router.get("/get_materials_by_parameter_name", response_model=Union[list[Material_Main], New_Response], tags=[Tags.parameter])
 def get_materials_by_parameter_name(name_parameter: str, value: float, db: Session = Depends(get_session)):
     material_by_parameter = (db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell, Manufacturer.name_manufacturer, Manufacturer.country)
                              .select_from(Parameter).filter(Parameter.name_parameter.ilike(f'%{name_parameter}%'))
