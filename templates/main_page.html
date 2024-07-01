@@ -37,8 +37,18 @@
     </form>
     <form action="" method="post">
         <div class="child">
+            <p> Запах: <label><input type="checkbox" id="smell"> Без запаха</label></p>
+        </div>
+        <div class="child"><p> Тип материала: </p>
+            <label><input type="checkbox" id="PLA"> PLA</label>
+            <label><input type="checkbox" id="PETG"> PETG</label>
+            <label><input type="checkbox" id="ABS"> ABS</label>
+            <label><input type="checkbox" id="PEEK"> PEEK</label>
+        </div>
+        <div class="child">
             {% for parameter in parameters %}
-            <p>{{ parameter.name_parameter }}, {{ parameter.units }}: <input type="text" id="{{ parameter.id_parameter }}"></p>
+            <p>{{ parameter.name_parameter }}, {{ parameter.units }}: <input type="text"
+                                                                             id="{{ parameter.id_parameter }}"></p>
             {% endfor %}
             <p align="center">
                 <button type="submit">Показать материалы</button>

@@ -15,8 +15,8 @@ def get_materials_by_name(request: Request, name_material: str = Form(...), db: 
     materials_by_name = (
         db.query(Material.id_material, Material.name_material, Material.price, Gost.name_gost, Smell.degree_smell,
                  Manufacturer.name_manufacturer, Manufacturer.country, Printing_technology.name_technology).select_from(Material)
-        .filter(Material.name_material.ilike(f'%{name_material}%'))
-        .join(Gost).join(Smell).join(Manufacturer).join(Printing_technology))
+                .filter(Material.name_material.ilike(f'%{name_material}%'))
+                .join(Gost).join(Smell).join(Manufacturer).join(Printing_technology))
     if not materials_by_name.first():
         return JSONResponse(status_code=404, content={"message": "Материал не найден"})
     return templates.TemplateResponse("materials.html", {"request": request, "materials": materials_by_name})
